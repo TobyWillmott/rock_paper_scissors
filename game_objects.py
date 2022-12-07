@@ -1,5 +1,5 @@
 """
-Module contains the class objects that control the underlying logic for rock-paper scissors game. changed
+Module contains the class objects that control the underlying logic for rock-paper scissors game. changed again
 ...
 Classes
 -------
