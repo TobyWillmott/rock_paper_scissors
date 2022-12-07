@@ -1,12 +1,12 @@
 """
-Module contains the class objects that control the underlying logic for rock-paper scissors game.
+Module contains the class objects that control the underlying logic for rock-paper scissors game. changed
 ...
 Classes
 -------
     PlayerObject
     Player
     HumanPlayer (subclass of Player)
-    ComputerPlayer (subclass of Player
+    ComputerPlayer (subclass of Player)
     Game
 
 """
