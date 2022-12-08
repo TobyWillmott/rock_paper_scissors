@@ -219,13 +219,14 @@ class Game:
         if self.players[0].current_object > self.players[1].current_object:
             self.round_result = "win"
             self.round_winner = self.players[0]
+            self.round_winner.win_round()
         elif self.players[0].current_object == self.players[1].current_object:
             self.round_result = "draw"
             self.round_winner = None
         else:
             self.round_result = "win"
             self.round_winner = self.players[1]
-        self.round_winner.win_round()
+            self.round_winner.win_round()
         return self.round_result
 
     def next_round(self):
@@ -271,4 +272,7 @@ class Game:
         else:
             out = "Game is drawn"
         return out
+
+
+
 
