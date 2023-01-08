@@ -21,7 +21,8 @@ class GameApp(tk.Tk):
         self.frames = {
             "game_frame_one": GameOptionsGui(self),
             "game_frame_two": GamePlayerMenu(self),
-            "game_frame_three": GameResultsMenu(self)
+            "game_frame_three": GameResultsMenu(self),
+            "game_frame_four": FinishedGame(self)
         }
 
         self.show_frame("game_frame_one")
@@ -42,7 +43,6 @@ class GameOptionsGui(tk.Frame):
         super().__init__()
         self.controller = controller
         self.game = controller.game
-
         self.config(background="yellow")
 
         self.columnconfigure(0, weight=1)
@@ -53,6 +53,7 @@ class GameOptionsGui(tk.Frame):
 
         title_label = tk.Label(self, text="Welcome to Rock-Paper-Scissors-Lizard-Spock")
         num_rounds_label = tk.Label(self, text="How many rounds would you like to add(1,3,5): ")
+
         num_rounds_value = tk.Entry(self, textvariable=self.num_rounds)
 
         player_name_1 = tk.Label(self, text="Player 1 please enter your name ")
@@ -70,13 +71,10 @@ class GameOptionsGui(tk.Frame):
 
         self.game.add_human_player(self.user_name_1.get())
         self.game.add_computer_player()
+        self.game.set_max_rounds(self.num_rounds.get())
 
     def set_up(self):
-        if self.game.max_rounds:
-            self.num_rounds.set(self.game.max_rounds)
-
-        # self.round_number.set(self.controller.game.current_round)
-
+        ...
     def next_frame(self):
         name_index_1 = False
 
@@ -103,6 +101,7 @@ class GamePlayerMenu(tk.Frame):
 
         self.player_name_1 = tk.StringVar()
         self.player_name_2 = tk.StringVar()
+        self.report_score = tk.StringVar()
 
         self.config(background="purple")
         self.columnconfigure(0, weight=1)
@@ -111,8 +110,8 @@ class GamePlayerMenu(tk.Frame):
         self.columnconfigure(3, weight=1)
         self.columnconfigure(4, weight=1)
 
-        title_label = tk.Label(self, text=f"{self.player.name} what move would you like to play: ")
-        # round_number_output = tk.Label(self, text=self.game.report_score)
+        title_label = tk.Label(self, text=f"{self.player_name_1} what move would you like to play: ")
+        round_number_output = tk.Label(self, textvariable=self.report_score)
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
         self.options_buttons = (tk.Button(self, text="Rock", command=self.rock_button),
                                 tk.Button(self, text="Paper", command=self.paper_button),
@@ -121,15 +120,16 @@ class GamePlayerMenu(tk.Frame):
                                 tk.Button(self, text="Spock", command=self.spock_button))
 
         title_label.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
-        # round_number_output.grid(row=0, column=1)
+        round_number_output.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
         for i, btn in enumerate(self.options_buttons):
-            btn.grid(row=1, column=i, padx=10, pady=10)
+            btn.grid(row=2, column=i, padx=10, pady=10)
         self.next_frame_button.grid(row=3, column=2, padx=10, pady=10)
 
     def set_up(self):
         self.player_name_1.set(self.game.players[0].name)
         self.player_name_2.set(self.game.players[1].name)
         self.computer.choose_object()
+        self.report_score.set(self.game.report_score())
 
     def rock_button(self):
         self.player.choose_object("Rock")
@@ -156,21 +156,57 @@ class GameResultsMenu(tk.Frame):
         self.controller = controller
         self.game = controller.game
 
+        self.report_round = tk.StringVar()
+        self.report_score = tk.StringVar()
+
         self.config(background="blue")
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
 
         title_label = tk.Label(self, text="Results!!")
+        self.report_round_label = tk.Label(self, textvariable=self.report_round)
+        self.report_score_label = tk.Label(self, textvariable=self.report_score)
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
+
         title_label.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
-        self.next_frame_button.grid(row=1, column=1, padx=10, pady=10)
+        self.next_frame_button.grid(row=3, column=1, padx=10, pady=10)
+        self.report_round_label.grid(row=1, column=0)
+        self.report_score_label.grid(row=2, column=0)
 
     def next_frame(self):
-        self.controller.show_frame("game_frame_two")
-        self.game.next_round()
+        if self.game.is_finished():
+            self.controller.show_frame("game_frame_four")
+        else:
+            self.game.next_round()
+            self.controller.show_frame("game_frame_two")
 
     def set_up(self):
-        ...
+        self.game.find_winner()
+        self.report_round.set(self.controller.game.report_round())
+        self.report_score.set(self.controller.game.report_score())
+
+
+class FinishedGame(tk.Frame):
+    def __init__(self, controller: GameApp):
+        super().__init__()
+        self.controller = controller
+        self.game = controller.game
+
+        self.title = tk.Label(self, text="The game has finished here are the final results: ")
+        self.report_winner = tk.StringVar()
+        self.report_winner_label = tk.Label(self, textvariable=self.report_winner)
+        self.play_again_button = tk.Button(self, text="Play Again", command=self.play_again)
+
+        self.title.grid(row=0, column=0)
+        self.report_winner_label.grid(row=1, column=0)
+        self.play_again_button.grid(row=2, column=0)
+    def set_up(self):
+        self.report_winner.set(self.game.report_winner())
+
+
+    def play_again(self):
+        self.game.reset()
+        self.controller.show_frame("game_frame_one")
 
 
 def create_game():
