@@ -5,6 +5,7 @@ class Cli_interface:
     def __init__(self):
         self.game = Game()
         self.max_rounds = None
+
     def set_up(self):
         print("Welcome to Rock-Paper-Scissors-Lizard-Spock")
         num_players = int(input("Enter how many players you would like to add: "))
