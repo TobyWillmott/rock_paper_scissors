@@ -1,6 +1,6 @@
 import tkinter as tk
-from game_objects import PlayerObject, Game
-
+from game_objects import Game
+from tkinter import ttk
 
 class GameApp(tk.Tk):
     def __init__(self):
@@ -47,48 +47,42 @@ class GameOptionsGui(tk.Frame):
 
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
-
         self.user_name_1 = tk.StringVar()
         self.num_rounds = tk.IntVar()
-
         title_label = tk.Label(self, text="Welcome to Rock-Paper-Scissors-Lizard-Spock")
-        num_rounds_label = tk.Label(self, text="How many rounds would you like to add(1,3,5): ")
-
-        num_rounds_value = tk.Entry(self, textvariable=self.num_rounds)
-
-        player_name_1 = tk.Label(self, text="Player 1 please enter your name ")
-        player_name_1_input = tk.Entry(self, textvariable=self.user_name_1)
-
+        self.num_rounds_label = tk.Label(self, text="How many rounds would you like to add(1,3,5): ")
+        self.num_rounds_value = tk.Entry(self)
+        self.player_name_1 = tk.Label(self, text="Player 1 please enter your name ")
+        self.player_name_1_input = tk.Entry(self)
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
 
         self.next_frame_button.grid(row=2, column=2, padx=10, pady=10)
         title_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="news")
-        player_name_1.grid(row=1, column=0, padx=10, pady=10)
-        player_name_1_input.grid(row=1, column=1, padx=10, pady=10)
+        self.player_name_1.grid(row=1, column=0, padx=10, pady=10)
+        self.player_name_1_input.grid(row=1, column=1)
+        self.num_rounds_label.grid(row=3, column=0, padx=10, pady=10)
+        self.num_rounds_value.grid(row=3, column=1)
 
-        num_rounds_label.grid(row=3, column=0, padx=10, pady=10)
-        num_rounds_value.grid(row=3, column=1, padx=10, pady=10)
-
-        self.game.add_human_player(self.user_name_1.get())
+        self.game.add_human_player(self.player_name_1_input.get())
         self.game.add_computer_player()
-        self.game.set_max_rounds(self.num_rounds.get())
+        self.game.set_max_rounds(self.num_rounds_value.get())
 
     def set_up(self):
         ...
     def next_frame(self):
-        name_index_1 = False
+        #name_index_1 = False
 
-        round_index = False
-        name_1 = self.user_name_1.get()
+        #round_index = False
+        #name_1 = self.player_name_1_input.get()
 
-        num_rounds = self.num_rounds.get()
-        if len(name_1) > 0:
-            name_index_1 = True
+        #num_rounds = self.num_rounds_value
+        #if len(name_1) > 0:
+        #    name_index_1 = True
 
-        if num_rounds == 1 or num_rounds == 3 or num_rounds == 5:
-            round_index = True
-        if name_index_1 == True and round_index == True:
-            self.controller.show_frame("game_frame_two")
+        #if num_rounds == 1 or num_rounds == 3 or num_rounds == 5:
+        #    round_index = True
+        #if name_index_1 == True and round_index == True:
+        self.controller.show_frame("game_frame_two")
 
 
 class GamePlayerMenu(tk.Frame):
@@ -157,7 +151,7 @@ class GameResultsMenu(tk.Frame):
         self.game = controller.game
 
         self.report_round = tk.StringVar()
-        self.report_score = tk.StringVar()
+
 
         self.config(background="blue")
         self.columnconfigure(0, weight=1)
@@ -165,13 +159,13 @@ class GameResultsMenu(tk.Frame):
 
         title_label = tk.Label(self, text="Results!!")
         self.report_round_label = tk.Label(self, textvariable=self.report_round)
-        self.report_score_label = tk.Label(self, textvariable=self.report_score)
+
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
 
         title_label.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
         self.next_frame_button.grid(row=3, column=1, padx=10, pady=10)
         self.report_round_label.grid(row=1, column=0)
-        self.report_score_label.grid(row=2, column=0)
+
 
     def next_frame(self):
         if self.game.is_finished():
@@ -183,7 +177,7 @@ class GameResultsMenu(tk.Frame):
     def set_up(self):
         self.game.find_winner()
         self.report_round.set(self.controller.game.report_round())
-        self.report_score.set(self.controller.game.report_score())
+
 
 
 class FinishedGame(tk.Frame):
