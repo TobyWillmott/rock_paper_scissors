@@ -1,7 +1,5 @@
 import tkinter as tk
 from game_objects import Game
-from tkinter import ttk
-
 class GameApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -63,26 +61,28 @@ class GameOptionsGui(tk.Frame):
         self.num_rounds_label.grid(row=3, column=0, padx=10, pady=10)
         self.num_rounds_value.grid(row=3, column=1)
 
-        self.game.add_human_player(self.player_name_1_input.get())
+        self.game.add_human_player()
         self.game.add_computer_player()
-        self.game.set_max_rounds(self.num_rounds_value.get())
 
+    def set_up_final(self):
+        self.game.set_max_rounds(int(self.num_rounds_value.get())-1)
+        self.game.add_name(self.player_name_1_input.get())
     def set_up(self):
         ...
     def next_frame(self):
-        #name_index_1 = False
+        self.set_up_final()
+        name_index_1 = False
 
-        #round_index = False
-        #name_1 = self.player_name_1_input.get()
+        round_index = False
+        name_1 = self.player_name_1_input.get()
+        num_rounds = int(self.num_rounds_value.get())
+        if len(name_1) > 0:
+            name_index_1 = True
 
-        #num_rounds = self.num_rounds_value
-        #if len(name_1) > 0:
-        #    name_index_1 = True
-
-        #if num_rounds == 1 or num_rounds == 3 or num_rounds == 5:
-        #    round_index = True
-        #if name_index_1 == True and round_index == True:
-        self.controller.show_frame("game_frame_two")
+        if num_rounds == 1 or num_rounds == 3 or num_rounds == 5:
+            round_index = True
+        if name_index_1 == True and round_index == True:
+            self.controller.show_frame("game_frame_two")
 
 
 class GamePlayerMenu(tk.Frame):
@@ -104,7 +104,7 @@ class GamePlayerMenu(tk.Frame):
         self.columnconfigure(3, weight=1)
         self.columnconfigure(4, weight=1)
 
-        title_label = tk.Label(self, text=f"{self.player_name_1} what move would you like to play: ")
+        title_label = tk.Label(self, text=f"What move would you like to play: ")
         round_number_output = tk.Label(self, textvariable=self.report_score)
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
         self.options_buttons = (tk.Button(self, text="Rock", command=self.rock_button),
@@ -121,7 +121,6 @@ class GamePlayerMenu(tk.Frame):
 
     def set_up(self):
         self.player_name_1.set(self.game.players[0].name)
-        self.player_name_2.set(self.game.players[1].name)
         self.computer.choose_object()
         self.report_score.set(self.game.report_score())
 
@@ -196,7 +195,6 @@ class FinishedGame(tk.Frame):
         self.play_again_button.grid(row=2, column=0)
     def set_up(self):
         self.report_winner.set(self.game.report_winner())
-
 
     def play_again(self):
         self.game.reset()

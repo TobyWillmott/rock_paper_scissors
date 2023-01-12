@@ -204,7 +204,8 @@ class Game:
         """ Add a human player with their name and appends it to players"""
         human_player = HumanPlayer(name)
         self.players.append(human_player)
-
+    def add_name(self, name):
+        self.players[0].set_name(name)
     def add_computer_player(self):
         """ Add a computer player (no name) """
         computer_player = ComputerPlayer()
