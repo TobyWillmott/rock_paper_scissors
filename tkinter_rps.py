@@ -1,7 +1,13 @@
 import tkinter as tk
 from game_objects import Game
+from PIL import Image, ImageTK
 
-
+IMAGES = {"scissors": Image.open(r'images\scissors.png').resize((64, 64), Image.ANTIALIAS),
+          "rock": Image.open(r'images\rock.png').resize((64, 64), Image.ANTIALIAS),
+          "paper": Image.open(r'images\paper.png').resize((64, 64), Image.ANTIALIAS),
+          "lizard": Image.open(r'images\lizard.png').resize((64, 64), Image.ANTIALIAS),
+          "spock": Image.open(r'images\spock.png').resize((64, 64), Image.ANTIALIAS),
+          }
 class GameApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -112,7 +118,10 @@ class GamePlayerMenu(tk.Frame):
         title_label = tk.Label(self, text=f"What move would you like to play: ", bg="#e7e6ed", fg="black")
         round_number_output = tk.Label(self, textvariable=self.report_score, bg="#e7e6ed", fg="black")
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
-        self.options_buttons = (tk.Button(self, text="Rock", command=self.rock_button),
+
+        self.tk.images = {item: ImageTK.PhotoImage(img) for item, img in IMAGES.items()}
+
+        self.options_buttons = (tk.Button(self, text="Rock", image = self.tk_images["rock"],command=self.rock_button),
                                 tk.Button(self, text="Paper", command=self.paper_button),
                                 tk.Button(self, text="Scissors", command=self.scissors_button),
                                 tk.Button(self, text="Lizard", command=self.lizard_button),
