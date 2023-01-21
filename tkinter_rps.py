@@ -1,5 +1,7 @@
 import tkinter as tk
 from game_objects import Game
+
+
 class GameApp(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -11,9 +13,9 @@ class GameApp(tk.Tk):
 
         title_label = tk.Label(self,
                                text=title_string,
-                               bg="blue", fg="white",
-                               width=40,
-                               font=("Arial", 20))
+                               bg="#e7e6ed", fg="black",
+                               width=60,
+                               font=("Arial", 25))
         title_label.pack(side=tk.TOP)
 
         self.frames = {
@@ -41,16 +43,17 @@ class GameOptionsGui(tk.Frame):
         super().__init__()
         self.controller = controller
         self.game = controller.game
-        self.config(background="yellow")
+        self.config(background="#e7e6ed")
 
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.user_name_1 = tk.StringVar()
         self.num_rounds = tk.IntVar()
-        title_label = tk.Label(self, text="Welcome to Rock-Paper-Scissors-Lizard-Spock")
-        self.num_rounds_label = tk.Label(self, text="How many rounds would you like to add(1,3,5): ")
+        title_label = tk.Label(self, text="Welcome to Rock-Paper-Scissors-Lizard-Spock", bg="#e7e6ed", fg="black")
+        self.num_rounds_label = tk.Label(self, text="How many rounds would you like to add(1,3,5): ", bg="#e7e6ed",
+                                         fg="black")
         self.num_rounds_value = tk.Entry(self)
-        self.player_name_1 = tk.Label(self, text="Player 1 please enter your name ")
+        self.player_name_1 = tk.Label(self, text="Player 1 please enter your name ", bg="#e7e6ed", fg="black")
         self.player_name_1_input = tk.Entry(self)
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
 
@@ -65,10 +68,12 @@ class GameOptionsGui(tk.Frame):
         self.game.add_computer_player()
 
     def set_up_final(self):
-        self.game.set_max_rounds(int(self.num_rounds_value.get())-1)
+        self.game.set_max_rounds(int(self.num_rounds_value.get()) - 1)
         self.game.add_name(self.player_name_1_input.get())
+
     def set_up(self):
         ...
+
     def next_frame(self):
         self.set_up_final()
         name_index_1 = False
@@ -81,7 +86,7 @@ class GameOptionsGui(tk.Frame):
 
         if num_rounds == 1 or num_rounds == 3 or num_rounds == 5:
             round_index = True
-        if name_index_1 == True and round_index == True:
+        if name_index_1 and round_index:
             self.controller.show_frame("game_frame_two")
 
 
@@ -97,15 +102,15 @@ class GamePlayerMenu(tk.Frame):
         self.player_name_2 = tk.StringVar()
         self.report_score = tk.StringVar()
 
-        self.config(background="purple")
+        self.config(background="#e7e6ed")
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
         self.columnconfigure(2, weight=1)
         self.columnconfigure(3, weight=1)
         self.columnconfigure(4, weight=1)
 
-        title_label = tk.Label(self, text=f"What move would you like to play: ")
-        round_number_output = tk.Label(self, textvariable=self.report_score)
+        title_label = tk.Label(self, text=f"What move would you like to play: ", bg="#e7e6ed", fg="black")
+        round_number_output = tk.Label(self, textvariable=self.report_score, bg="#e7e6ed", fg="black")
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
         self.options_buttons = (tk.Button(self, text="Rock", command=self.rock_button),
                                 tk.Button(self, text="Paper", command=self.paper_button),
@@ -151,20 +156,18 @@ class GameResultsMenu(tk.Frame):
 
         self.report_round = tk.StringVar()
 
-
-        self.config(background="blue")
+        self.config(background="#e7e6ed")
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
 
-        title_label = tk.Label(self, text="Results!!")
-        self.report_round_label = tk.Label(self, textvariable=self.report_round)
+        title_label = tk.Label(self, text="Results!!", bg="#e7e6ed", fg="black")
+        self.report_round_label = tk.Label(self, textvariable=self.report_round, bg="#e7e6ed", fg="black")
 
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
 
         title_label.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
         self.next_frame_button.grid(row=3, column=1, padx=10, pady=10)
         self.report_round_label.grid(row=1, column=0)
-
 
     def next_frame(self):
         if self.game.is_finished():
@@ -178,21 +181,21 @@ class GameResultsMenu(tk.Frame):
         self.report_round.set(self.controller.game.report_round())
 
 
-
 class FinishedGame(tk.Frame):
     def __init__(self, controller: GameApp):
         super().__init__()
         self.controller = controller
         self.game = controller.game
-
-        self.title = tk.Label(self, text="The game has finished here are the final results: ")
+        self.config(background="#e7e6ed")
+        self.title = tk.Label(self, text="The game has finished here are the final results: ", bg="#e7e6ed", fg="black")
         self.report_winner = tk.StringVar()
-        self.report_winner_label = tk.Label(self, textvariable=self.report_winner)
+        self.report_winner_label = tk.Label(self, textvariable=self.report_winner, bg="#e7e6ed", fg="black")
         self.play_again_button = tk.Button(self, text="Play Again", command=self.play_again)
 
         self.title.grid(row=0, column=0)
         self.report_winner_label.grid(row=1, column=0)
         self.play_again_button.grid(row=2, column=0)
+
     def set_up(self):
         self.report_winner.set(self.game.report_winner())
 
