@@ -1,5 +1,6 @@
 import tkinter as tk
 from game_objects import Game
+from functools import partial
 
 
 class GameApp(tk.Tk):
@@ -57,12 +58,16 @@ class GameOptionsGui(tk.Frame):
         self.player_name_1_input = tk.Entry(self)
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
 
+        self.quit_button = tk.Button(self, text="Quit",
+                                     width=15, command=self.controller.destroy)
+
         self.next_frame_button.grid(row=2, column=2, padx=10, pady=10)
         title_label.grid(row=0, column=0, columnspan=2, padx=10, pady=10, sticky="news")
         self.player_name_1.grid(row=1, column=0, padx=10, pady=10)
         self.player_name_1_input.grid(row=1, column=1)
         self.num_rounds_label.grid(row=3, column=0, padx=10, pady=10)
         self.num_rounds_value.grid(row=3, column=1)
+        self.quit_button.grid(row=3, column=2)
 
         self.game.add_human_player()
         self.game.add_computer_player()
@@ -112,44 +117,38 @@ class GamePlayerMenu(tk.Frame):
         title_label = tk.Label(self, text=f"What move would you like to play: ", bg="#e7e6ed", fg="black")
         round_number_output = tk.Label(self, textvariable=self.report_score, bg="#e7e6ed", fg="black")
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
+        self.quit_button = tk.Button(self, text="Quit",
+                                     width=15, command=self.controller.destroy)
+        self.rock_photo = tk.PhotoImage(file=r"rock.png")
+        self.paper_photo = tk.PhotoImage(file=r"paper.png")
+        self.scissors_photo = tk.PhotoImage(file=r"scissors.png")
+        self.lizard_photo = tk.PhotoImage(file=r"lizard.png")
+        self.spock_photo = tk.PhotoImage(file=r"spock.png")
 
-        self.rock_photo = tk.PhotoImage(file=r"images\rock.png")
-        self.paper_photo = tk.PhotoImage(file=r"images\paper.png")
-        self.scissors_photo = tk.PhotoImage(file=r"images\scissors.png")
-        self.lizard_photo = tk.PhotoImage(file=r"images\lizard.png")
-        self.spock_photo = tk.PhotoImage(file=r"images\spock.png")
-
-        self.options_buttons = (tk.Button(self, text="Rock", image=self.rock_photo, command=self.rock_button),
-                                tk.Button(self, text="Paper", command=self.paper_button),
-                                tk.Button(self, text="Scissors", command=self.scissors_button),
-                                tk.Button(self, text="Lizard", command=self.lizard_button),
-                                tk.Button(self, text="Spock", command=self.spock_button))
+        self.options_buttons = (tk.Button(self, text="Rock", image=self.rock_photo,
+                                          command=partial(self.choose_object, "Rock")),
+                                tk.Button(self, text="Paper", image=self.paper_photo,
+                                          command=partial(self.choose_object, "Paper")),
+                                tk.Button(self, text="Scissors", image=self.scissors_photo,
+                                          command=partial(self.choose_object, "Scissors")),
+                                tk.Button(self, text="Lizard", image=self.lizard_photo,
+                                          command=partial(self.choose_object, "Lizard")),
+                                tk.Button(self, text="Spock", image=self.spock_photo,
+                                          command=partial(self.choose_object, "Spock")))
 
         title_label.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
         round_number_output.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
         for i, btn in enumerate(self.options_buttons):
             btn.grid(row=2, column=i, padx=10, pady=10)
         self.next_frame_button.grid(row=3, column=2, padx=10, pady=10)
-
+        self.quit_button.grid(row=4, column=2)
     def set_up(self):
         self.player_name_1.set(self.game.players[0].name)
         self.computer.choose_object()
         self.report_score.set(self.game.report_score())
 
-    def rock_button(self):
-        self.player.choose_object("Rock")
-
-    def paper_button(self):
-        self.player.choose_object("Paper")
-
-    def scissors_button(self):
-        self.player.choose_object("Scissors")
-
-    def lizard_button(self):
-        self.player.choose_object("Lizard")
-
-    def spock_button(self):
-        self.player.choose_object("Spock")
+    def choose_object(self, item):
+        self.player.choose_object(item)
 
     def next_frame(self):
         self.controller.show_frame("game_frame_three")
@@ -171,11 +170,13 @@ class GameResultsMenu(tk.Frame):
         self.report_round_label = tk.Label(self, textvariable=self.report_round, bg="#e7e6ed", fg="black")
 
         self.next_frame_button = tk.Button(self, text="Next Frame", command=self.next_frame)
+        self.quit_button = tk.Button(self, text="Quit",
+                                     width=15, command=self.controller.destroy)
 
         title_label.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
         self.next_frame_button.grid(row=3, column=1, padx=10, pady=10)
         self.report_round_label.grid(row=1, column=0)
-
+        self.quit_button.grid(row=4, column=1)
     def next_frame(self):
         if self.game.is_finished():
             self.controller.show_frame("game_frame_four")
